@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.example.xiaochong.driftingnotes.Activities.MainFragmentActivity">
+
+
+    <FrameLayout
+        android:id="@+id/fl"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1.0"
+        >
+    </FrameLayout>
+
+    <RadioGroup
+        android:id="@android:id/tabs"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:orientation="horizontal"
+        android:background="#50cccccc"
+
+        >
+        <Button
+            android:id="@+id/bt1"
+            android:layout_width="0dp"
+            android:layout_height="fill_parent"
+            android:layout_weight="1.0"
+            android:text="定位"
+            android:textSize="16sp"
+            android:textColor="#ff0000"
+            android:drawableTop="@mipmap/locate"
+            android:gravity="center"
+            android:background="@null"
+            />
+        <View
+            android:layout_width="1dp"
+            android:layout_height="fill_parent"
+            android:background="#7d7d7d"/>
+        <Button
+            android:id="@+id/bt2"
+            android:layout_width="0dp"
+            android:layout_height="fill_parent"
+            android:layout_weight="1.0"
+            android:text="我的"
+            android:drawableTop="@mipmap/ic_launcher"
+            android:textSize="16sp"
+            android:textColor="#ff0000"
+            android:gravity="center"
+            android:background="@null"
+            />
+        <View
+            android:layout_width="1dp"
+            android:layout_height="fill_parent"
+            android:background="#7d7d7d"/>
+        <Button
+            android:id="@+id/bt3"
+            android:layout_width="0dp"
+            android:layout_height="fill_parent"
+            android:layout_weight="1.0"
+            android:text="中心"
+            android:drawableTop="@mipmap/ic_launcher"
+            android:textSize="16sp"
+            android:textColor="#ff0000"
+            android:gravity="center"
+            android:background="@null"
+            />
+    </RadioGroup>
+
+    <android.support.v4.app.FragmentTabHost
+        android:id="@android:id/tabhost"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        ></android.support.v4.app.FragmentTabHost>
+
+</LinearLayout>
