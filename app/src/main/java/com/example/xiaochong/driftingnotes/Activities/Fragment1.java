@@ -1,5 +1,6 @@
 package com.example.xiaochong.driftingnotes.Activities;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -11,14 +12,12 @@ import com.amap.api.location.AMapLocation;
 import com.amap.api.location.AMapLocationClient;
 import com.amap.api.location.AMapLocationClientOption;
 import com.amap.api.location.AMapLocationListener;
+import com.amap.api.maps2d.UiSettings;
 import com.amap.api.maps2d.model.MyLocationStyle;
 import com.amap.api.maps2d.AMap;
 import com.amap.api.maps2d.LocationSource;
 import com.amap.api.maps2d.MapView;
 import com.example.xiaochong.driftingnotes.R;
-
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -31,6 +30,7 @@ public class Fragment1 extends Fragment implements LocationSource,AMapLocationLi
     private LocationSource.OnLocationChangedListener mListener;
     private AMapLocationClient locationClient;
     private AMapLocationClientOption clientOption;
+    private UiSettings mUiSettings;//定义一个UiSettings对象
     private AMap aMap;
 
     private static final String TAG = "Fragment1";
@@ -49,7 +49,13 @@ public class Fragment1 extends Fragment implements LocationSource,AMapLocationLi
         if (aMap == null) {
             aMap = map1.getMap();
         }
+        mUiSettings = aMap.getUiSettings();//实例化UiSettings类对象
+        mUiSettings.setScaleControlsEnabled(true);
+        mUiSettings.setAllGesturesEnabled(true);//所有手势有效
+
         myLocationStyle = new MyLocationStyle();//初始化定位蓝点样式类
+        myLocationStyle.strokeColor(Color.argb(0, 0, 0, 0));// 设置圆形的边框颜色
+        myLocationStyle.radiusFillColor(Color.argb(0, 0, 0, 0));// 设置圆形的填充颜色
         aMap.setMyLocationStyle(myLocationStyle);
         aMap.getUiSettings().setMyLocationButtonEnabled(true);
         aMap.setLocationSource(this);
@@ -94,28 +100,7 @@ public class Fragment1 extends Fragment implements LocationSource,AMapLocationLi
         if (mListener != null&&aMapLocation != null) {
             if (aMapLocation != null
                     &&aMapLocation.getErrorCode() == 0) {
-                String str="";
-                str += aMapLocation.getLocationType()+"\n";//获取当前定位结果来源，如网络定位结果，详见定位类型表
-                str += aMapLocation.getLatitude()+"  ";//获取纬度
-                str += aMapLocation.getLongitude()+"  ";//获取经度
-                str += aMapLocation.getAccuracy()+"\n";//获取精度信息
-                str += aMapLocation.getAddress()+"\n";//地址，如果option中设置isNeedAddress为false，则没有此结果，网络定位结果中会有地址信息，GPS定位不返回地址信息。
-                str += aMapLocation.getCountry()+"  ";//国家信息
-                str += aMapLocation.getProvince()+"  ";//省信息
-                str += aMapLocation.getCity()+"\n";//城市信息
-                str += aMapLocation.getDistrict()+"  ";//城区信息
-                str += aMapLocation.getStreet()+"  ";//街道信息
-                str += aMapLocation.getStreetNum()+"\n";//街道门牌号信息
-                str += aMapLocation.getCityCode()+"  ";//城市编码
-                str += aMapLocation.getAdCode()+"\n";//地区编码
-                str += aMapLocation.getAoiName()+"\n";//获取当前定位点的AOI信息
-                str += aMapLocation.getGpsAccuracyStatus()+"\n";//获取GPS的当前状态
-                //获取定位时间
-                SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                Date date = new Date(aMapLocation.getTime());
-                df.format(date);
-                str += date;
-                Log.d(TAG, "onLocationChanged: "+str);
+//                GetInfo.getLocInfo(aMapLocation);//print location info
                 mListener.onLocationChanged(aMapLocation);// 显示系统小蓝点
             } else {
                 Log.d(TAG, "onLocationChanged: 定位失败"+aMapLocation.getErrorCode()+": "+aMapLocation.getErrorInfo());
@@ -175,7 +160,7 @@ public class Fragment1 extends Fragment implements LocationSource,AMapLocationLi
     @Override
     public void onDestroy() {
         Log.i("sys", "mf onDestroy");
-        map1.onDestroy();
+//        map1.onDestroy();
         super.onDestroy();
     }
 }

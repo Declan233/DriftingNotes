@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:background="#ffffff"
+    android:padding="12dp"
+    tools:context="com.example.xiaochong.driftingnotes.Activities.LoginActivity">
+
+    <LinearLayout
+        android:layout_marginBottom="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <TextView
+            android:layout_weight="2"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:textColor="#000000"
+            android:text="用户名"
+            android:textSize="18dp"
+            android:textAlignment="center"/>
+        <EditText
+            android:id="@+id/ed_username"
+            android:layout_weight="8"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:hint="请输入您的手机号"
+            android:paddingStart="4dp"
+            android:inputType="number"
+            android:background="@drawable/input_box"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_marginBottom="10dp"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <TextView
+            android:layout_weight="2"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:textColor="#000000"
+            android:text="密  码"
+            android:textSize="18dp"
+            android:textAlignment="center"/>
+        <EditText
+            android:id="@+id/et_password"
+            android:layout_weight="8"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:paddingStart="4dp"
+            android:hint="请输入您的密码"
+            android:inputType="textPassword"
+            android:maxLength="16"
+            android:background="@drawable/input_box"
+            />
+
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/bt_login"
+        android:layout_width="match_parent"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:layout_height="40dp"
+        android:background="@drawable/bt_box"
+        android:textColor="#2F4F4F"
+        android:text="登        陆"
+        android:textSize="18dp"/>
+
+</LinearLayout>

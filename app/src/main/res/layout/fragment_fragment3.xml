@@ -2,13 +2,20 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#0000ff"
+    android:background="#ffffff"
+    android:padding="16dp"
+    android:orientation="vertical"
     tools:context="com.example.xiaochong.driftingnotes.Activities.Fragment3">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <LinearLayout
+        android:gravity="center"
+        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:layout_height="match_parent">
+
+        
+    </LinearLayout>
+    
+    
 
 </FrameLayout>

@@ -59,15 +59,15 @@ public class MainFragmentActivity extends FragmentActivity {
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.bt1:
-                Toast.makeText(MainFragmentActivity.this, "0001", Toast.LENGTH_LONG).show();
+//                Toast.makeText(MainFragmentActivity.this, "0001", Toast.LENGTH_LONG).show();
                 ft.setCurrentTab(0);
                 break;
             case R.id.bt2:
-                Toast.makeText(MainFragmentActivity.this, "0002", Toast.LENGTH_LONG).show();
+//                Toast.makeText(MainFragmentActivity.this, "0002", Toast.LENGTH_LONG).show();
                 ft.setCurrentTab(1);
                 break;
             case R.id.bt3:
-                Toast.makeText(MainFragmentActivity.this, "0003", Toast.LENGTH_LONG).show();
+//                Toast.makeText(MainFragmentActivity.this, "0003", Toast.LENGTH_LONG).show();
                 ft.setCurrentTab(2);
                 break;
         }
