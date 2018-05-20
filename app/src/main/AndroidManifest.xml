@@ -37,9 +37,10 @@
             </intent-filter>
         </activity>
         <activity android:name=".Activities.AssignActivity" />
-        <activity android:name=".Activities.PoiActivity"
-            android:theme="@android:style/Theme.Holo.NoActionBar"
-            ></activity>
+        <activity
+            android:name=".Activities.PoiActivity"
+            android:theme="@android:style/Theme.Holo.NoActionBar" />
+        <activity android:name=".Activities.TakePhotoActivity"></activity>
     </application>
 
 </manifest>

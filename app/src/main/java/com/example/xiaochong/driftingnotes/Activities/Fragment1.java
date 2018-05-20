@@ -1,9 +1,15 @@
 package com.example.xiaochong.driftingnotes.Activities;
 
 import android.app.Dialog;
+import android.content.ContentResolver;
 import android.content.Intent;
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.Gravity;
@@ -29,6 +35,9 @@ import com.amap.api.maps2d.MapView;
 import com.amap.api.maps2d.UiSettings;
 import com.amap.api.maps2d.model.MyLocationStyle;
 import com.example.xiaochong.driftingnotes.R;
+
+import java.io.FileNotFoundException;
+import java.io.IOException;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -61,8 +70,10 @@ public class Fragment1 extends Fragment implements LocationSource, AMapLocationL
     private AMapLocationClientOption clientOption;
     private UiSettings mUiSettings;//定义一个UiSettings对象
     private AMap aMap;
+    private Dialog mCameraDialog;
 
     private static final String TAG = "Fragment1";
+    private static final int ALBUM_OK = 2;
 
 
     @Override
@@ -202,7 +213,6 @@ public class Fragment1 extends Fragment implements LocationSource, AMapLocationL
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.upload_image:
-                Toast.makeText(getContext(), "选择图片", Toast.LENGTH_SHORT).show();
                 setDialog();
                 break;
             case R.id.bt_putout:
@@ -211,7 +221,7 @@ public class Fragment1 extends Fragment implements LocationSource, AMapLocationL
     }
 
     private void setDialog() {
-        Dialog mCameraDialog = new Dialog(this.getContext(), R.style.BottomDialog);
+        mCameraDialog = new Dialog(this.getContext(), R.style.BottomDialog);
         LinearLayout root = (LinearLayout) LayoutInflater.from(this.getContext()).inflate(
                 R.layout.popue_windows, null);
         //初始化视图
@@ -245,17 +255,80 @@ public class Fragment1 extends Fragment implements LocationSource, AMapLocationL
         switch (v.getId()) {
             case R.id.btn_choose_img:
                 //选择照片按钮
-                Toast.makeText(this.getContext(), "请选择照片", Toast.LENGTH_SHORT).show();
+                gallery(v);
+//                Toast.makeText(this.getContext(), "请选择照片", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.btn_open_camera:
                 //拍照按钮
-                Toast.makeText(this.getContext(), "即将打开相机", Toast.LENGTH_SHORT).show();
+                startActivity(new Intent(getContext(), TakePhotoActivity.class));
+//                Toast.makeText(this.getContext(), "即将打开相机", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.btn_cancel:
-                //取消按钮
-                Toast.makeText(this.getContext(), "取消", Toast.LENGTH_SHORT).show();
+                mCameraDialog.dismiss();
                 break;
 
         }
     }
+
+
+    public void gallery(View view) {
+                // 激活系统图库，选择一张图片
+                Intent intent = new Intent(Intent.ACTION_PICK);
+                intent.setType("image/*");
+                // 开启一个带有返回值的Activity，请求码为PHOTO_REQUEST_GALLERY
+                startActivityForResult(intent, ALBUM_OK);
+    }
+
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (ALBUM_OK == requestCode) {
+            Toast.makeText(this.getContext(), "OK now", Toast.LENGTH_SHORT).show();
+            Bitmap bitmap;
+            Log.e(TAG, " onActivityResult ");
+            ContentResolver cr = this.getActivity().getContentResolver();
+            Uri uri = data.getData();
+            try {
+                bitmap = BitmapFactory.decodeStream(cr.openInputStream(uri));
+                Log.e(TAG, " onActivityResult " + data.getData().toString());//此处用Log.e，仅是为了查看红色Log方便
+//                getImagePath(uri);//这是用来读取图片的exif
+                uploadImageShow.setImageBitmap(bitmap);
+                mCameraDialog.dismiss();
+
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+//
+//    private String getImagePath(Uri uri) {
+//        if (null == uri) {
+//            Log.e("getImagePath", "uri return null");
+//            return null;
+//        }
+//
+//        Log.e("getImagePath", uri.toString());
+//        String path = null;
+//        final String scheme = uri.getScheme();
+//        if (null == scheme) {
+//            path = uri.getPath();
+//        } else if (ContentResolver.SCHEME_FILE.equals(scheme)) {
+//            path = uri.getPath();
+//        } else if (ContentResolver.SCHEME_CONTENT.equals(scheme)) {
+//            String[] proj = { MediaStore.Images.Media.DATA };
+//            Cursor cursor = getContentResolver().query(uri, proj, null, null,
+//                    null);
+//            int nPhotoColumn = cursor
+//                    .getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+//            if (null != cursor) {
+//                cursor.moveToFirst();
+//                path = cursor.getString(nPhotoColumn);
+//            }
+//            cursor.close();
+//        }
+//
+//        return path;
+//    }
+
+
 }
