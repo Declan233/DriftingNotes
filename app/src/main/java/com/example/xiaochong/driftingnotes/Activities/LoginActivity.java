@@ -1,15 +1,16 @@
 package com.example.xiaochong.driftingnotes.Activities;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.example.xiaochong.driftingnotes.Cache.SharedPreferencesUtil;
 import com.example.xiaochong.driftingnotes.R;
+import com.example.xiaochong.driftingnotes.Utils.SharedPreferencesUtil;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -23,6 +24,10 @@ public class LoginActivity extends AppCompatActivity {
     EditText etPassword;
     @Bind(R.id.bt_login)
     Button btLogin;
+    @Bind(R.id.usr_image)
+    ImageView usrImage;
+    @Bind(R.id.bt_assign)
+    Button btAssign;
 
     private String mUserName = "18996400896";
     private String mPassWord = "abcd1234";
@@ -39,17 +44,8 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void determin() {
-        if(SharedPreferencesUtil.islogin(this)){
+        if (SharedPreferencesUtil.islogin(this)) {
             jump();
-        }
-    }
-
-    @OnClick(R.id.bt_login)
-    public void onViewClicked() {
-        if (validate()){
-            saveUserInfo();
-            jump();
-
         }
     }
 
@@ -57,14 +53,34 @@ public class LoginActivity extends AppCompatActivity {
      * 保存用户名和密码
      */
     private void saveUserInfo() {
-        SharedPreferencesUtil.saveString(this,"USERNAME",mphnum);
-        SharedPreferencesUtil.saveString(this,"USERPSW",mpsw);
+        SharedPreferencesUtil.saveString(this, "USERNAME", mphnum);
+        SharedPreferencesUtil.saveString(this, "USERPSW", mpsw);
         SharedPreferencesUtil.setState(this);
+    }
+
+    @OnClick({R.id.bt_login, R.id.bt_assign})
+    public void onViewClicked(View view) {
+        switch (view.getId()) {
+            case R.id.bt_login:
+                if (validate()) {
+                    saveUserInfo();
+                    jump();
+                }
+                break;
+            case R.id.bt_assign:
+                jumpToAssignPage();
+                break;
+        }
+    }
+
+    private void jumpToAssignPage() {
+        Intent intent = new Intent(this, AssignActivity.class);
+        startActivity(intent);
     }
 
 
     private void jump() {
-        Intent intent = new Intent(this,MainFragmentActivity.class);
+        Intent intent = new Intent(this, MainFragmentActivity.class);
         startActivity(intent);
         finish();
     }
@@ -76,21 +92,22 @@ public class LoginActivity extends AppCompatActivity {
             Toast.makeText(getApplicationContext(), "请输入您的手机号", Toast.LENGTH_SHORT).show();
             return false;
         }
-        if (mpsw.equals("")){
+        if (mpsw.equals("")) {
             Toast.makeText(getApplicationContext(), "请输入您的密码", Toast.LENGTH_SHORT).show();
             return false;
         }
-        if(mphnum.length()<11||!mphnum.equals(mUserName)) {
+        if (mphnum.length() < 11 || !mphnum.equals(mUserName)) {
             Toast.makeText(getApplicationContext(), "您输入的手机号有误，请重新输入", Toast.LENGTH_SHORT).show();
             edUsername.setText("");
             return false;
         }
-        if(!mpsw.equals(mPassWord)) {
+        if (!mpsw.equals(mPassWord)) {
             Toast.makeText(getApplicationContext(), "您输入的密码有误，请重新输入", Toast.LENGTH_SHORT).show();
             etPassword.setText("");
             return false;
         }
         return true;
     }
+
 
 }

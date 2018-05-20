@@ -1,4 +1,4 @@
-package com.example.xiaochong.driftingnotes.Cache;
+package com.example.xiaochong.driftingnotes.Utils;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -11,6 +11,7 @@ public class SharedPreferencesUtil {
 
     //保存用户状态
     private static SharedPreferences sharedPreferences;
+    private static String UF = "USER_INFO";
 
 
     public static void setState(Context context) {
@@ -31,7 +32,7 @@ public class SharedPreferencesUtil {
         //创建sharedPreferences
         if (sharedPreferences == null) {
             //name:文件名字 mode:权限
-            sharedPreferences = context.getSharedPreferences("USER_INFO", Context.MODE_PRIVATE);
+            sharedPreferences = context.getSharedPreferences(UF, Context.MODE_PRIVATE);
         }
         //保存key和value
         sharedPreferences.edit().putString(key, value).commit();
@@ -41,7 +42,7 @@ public class SharedPreferencesUtil {
      */
     public static String getString(Context context, String key, String defValue) {
         if (sharedPreferences == null) {
-            sharedPreferences = context.getSharedPreferences("USER_INFO", Context.MODE_PRIVATE);
+            sharedPreferences = context.getSharedPreferences(UF, Context.MODE_PRIVATE);
         }
         //获取boolean值
         return sharedPreferences.getString(key, defValue);
@@ -59,7 +60,7 @@ public class SharedPreferencesUtil {
         //创建sharedPreferences
         if (sharedPreferences == null) {
             //name:文件名字 mode:权限
-            sharedPreferences = context.getSharedPreferences("USER_INFO", Context.MODE_PRIVATE);
+            sharedPreferences = context.getSharedPreferences(UF, Context.MODE_PRIVATE);
         }
         //保存key和value
         sharedPreferences.edit().putBoolean(key, value).commit();
@@ -69,10 +70,36 @@ public class SharedPreferencesUtil {
      */
     public static boolean getboolean(Context context, String key, boolean defValue) {
         if (sharedPreferences == null) {
-            sharedPreferences = context.getSharedPreferences("USER_INFO", Context.MODE_PRIVATE);
+            sharedPreferences = context.getSharedPreferences(UF, Context.MODE_PRIVATE);
         }
         //获取boolean值
         return sharedPreferences.getBoolean(key, defValue);
+    }
+
+    /**
+     * 写入int值
+     * @param context
+     * @param key
+     * @param value
+     */
+    public static void saveInt(Context context, String key, int value) {
+        //创建sharedPreferences
+        if (sharedPreferences == null) {
+            //name:文件名字 mode:权限
+            sharedPreferences = context.getSharedPreferences(UF, Context.MODE_PRIVATE);
+        }
+        //保存key和value
+        sharedPreferences.edit().putInt(key, value).commit();
+    }
+    /**
+     * 获取int值
+     */
+    public static int getInt(Context context, String key, int defValue) {
+        if (sharedPreferences == null) {
+            sharedPreferences = context.getSharedPreferences(UF, Context.MODE_PRIVATE);
+        }
+        //获取boolean值
+        return sharedPreferences.getInt(key, defValue);
     }
 
 }

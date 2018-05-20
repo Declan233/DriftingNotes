@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:background="#ffffff"
     tools:context="com.example.xiaochong.driftingnotes.Activities.MainFragmentActivity">
 
 
@@ -19,7 +20,7 @@
     <RadioGroup
         android:id="@android:id/tabs"
         android:layout_width="match_parent"
-        android:layout_height="80dp"
+        android:layout_height="70dp"
         android:orientation="horizontal"
         android:background="#50cccccc"
 
@@ -29,10 +30,10 @@
             android:layout_width="0dp"
             android:layout_height="fill_parent"
             android:layout_weight="1.0"
-            android:text="定位"
+            android:text="发布"
             android:textSize="16sp"
-            android:textColor="#ff0000"
-            android:drawableTop="@mipmap/locate"
+            android:textColor="#000000"
+            android:drawableTop="@mipmap/edit"
             android:gravity="center"
             android:background="@null"
             />
@@ -45,10 +46,10 @@
             android:layout_width="0dp"
             android:layout_height="fill_parent"
             android:layout_weight="1.0"
-            android:text="我的"
-            android:drawableTop="@mipmap/ic_launcher"
+            android:text="附近"
+            android:drawableTop="@mipmap/logistic"
             android:textSize="16sp"
-            android:textColor="#ff0000"
+            android:textColor="#000000"
             android:gravity="center"
             android:background="@null"
             />
@@ -61,10 +62,10 @@
             android:layout_width="0dp"
             android:layout_height="fill_parent"
             android:layout_weight="1.0"
-            android:text="中心"
-            android:drawableTop="@mipmap/ic_launcher"
+            android:text="我的"
+            android:drawableTop="@mipmap/account"
             android:textSize="16sp"
-            android:textColor="#ff0000"
+            android:textColor="#000000"
             android:gravity="center"
             android:background="@null"
             />

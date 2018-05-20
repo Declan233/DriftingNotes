@@ -28,13 +28,18 @@
             android:name="com.amap.api.v2.apikey"
             android:value="f3ecae054dfb51e4149ba2473c1d14b3" />
 
-        <activity android:name=".Activities.MainFragmentActivity"></activity>
+        <activity android:name=".Activities.MainFragmentActivity" />
         <activity android:name=".Activities.LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".Activities.AssignActivity" />
+        <activity android:name=".Activities.PoiActivity"
+            android:theme="@android:style/Theme.Holo.NoActionBar"
+            ></activity>
     </application>
 
 </manifest>

@@ -1,5 +1,7 @@
 package com.example.xiaochong.driftingnotes.Activities;
 
+import android.graphics.Rect;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTabHost;
@@ -51,7 +53,19 @@ public class MainFragmentActivity extends FragmentActivity {
         ft.addTab(ts1, Fragment1.class, null);
         ft.addTab(ts2, Fragment2.class, null);
         ft.addTab(ts3, Fragment3.class, null);
+        //挨着给每个RadioButton加入drawable限制边距以控制显示大小
 
+        Drawable[] drs1 = bt1.getCompoundDrawables();//获取drawables
+        Drawable[] drs2 = bt2.getCompoundDrawables();//获取drawables
+        Drawable[] drs3 = bt3.getCompoundDrawables();//获取drawables
+        Rect r = new Rect(0, 8, drs1[1].getMinimumWidth()*1/4, drs1[1].getMinimumHeight()*1/4+10);//定义一个Rect边界
+        drs1[1].setBounds(r);//给drawable设置边界
+        drs2[1].setBounds(r);//给drawable设置边界
+        drs3[1].setBounds(r);//给drawable设置边界
+
+        bt1.setCompoundDrawables(null,drs1[1],null,null);
+        bt2.setCompoundDrawables(null,drs2[1],null,null);
+        bt3.setCompoundDrawables(null,drs3[1],null,null);
     }
 
 
@@ -59,15 +73,12 @@ public class MainFragmentActivity extends FragmentActivity {
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.bt1:
-//                Toast.makeText(MainFragmentActivity.this, "0001", Toast.LENGTH_LONG).show();
                 ft.setCurrentTab(0);
                 break;
             case R.id.bt2:
-//                Toast.makeText(MainFragmentActivity.this, "0002", Toast.LENGTH_LONG).show();
                 ft.setCurrentTab(1);
                 break;
             case R.id.bt3:
-//                Toast.makeText(MainFragmentActivity.this, "0003", Toast.LENGTH_LONG).show();
                 ft.setCurrentTab(2);
                 break;
         }

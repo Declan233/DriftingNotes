@@ -3,19 +3,59 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#ffffff"
-    android:padding="16dp"
+    android:padding="20dp"
     android:orientation="vertical"
     tools:context="com.example.xiaochong.driftingnotes.Activities.Fragment3">
 
     <LinearLayout
-        android:gravity="center"
-        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <ImageButton
+            android:layout_gravity="center"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:background="@drawable/head_image"
+            android:src="@mipmap/user_image"/>
 
-        
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                >
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:background="@color/gray_66"
+                    >
+                    <TextView
+                        android:layout_weight="9"
+                        android:layout_width="0px"
+                        android:layout_height="50px"
+                        android:text="afdsf"/>
+                    <ImageView
+                        android:layout_weight="1"
+                        android:layout_gravity="center"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:src="@mipmap/enter"/>
+                </LinearLayout>
+                <Button
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp" />
+                <Button
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp" />
+                <Button
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp" />
+                <Button
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp" />
+
+            </LinearLayout>
+
     </LinearLayout>
-    
-    
+
 
 </FrameLayout>
