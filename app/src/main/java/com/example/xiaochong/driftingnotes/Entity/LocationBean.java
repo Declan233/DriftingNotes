@@ -40,4 +40,8 @@ public class LocationBean implements Serializable {
     public String getSnippet() {
         return snippet;
     }
+
+    public String toString(){
+        return title+snippet+lon+" "+lat;
+    }
 }

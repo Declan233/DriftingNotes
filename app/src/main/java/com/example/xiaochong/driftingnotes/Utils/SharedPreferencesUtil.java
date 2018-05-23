@@ -102,4 +102,31 @@ public class SharedPreferencesUtil {
         return sharedPreferences.getInt(key, defValue);
     }
 
+
+    /**
+     * 写入float值
+     * @param context
+     * @param key
+     * @param value
+     */
+    public static void saveFloat(Context context, String key, float value) {
+        //创建sharedPreferences
+        if (sharedPreferences == null) {
+            //name:文件名字 mode:权限
+            sharedPreferences = context.getSharedPreferences(UF, Context.MODE_PRIVATE);
+        }
+        //保存key和value
+        sharedPreferences.edit().putFloat(key, value).commit();
+    }
+    /**
+     * 获取float值
+     */
+    public static float getFloat(Context context, String key, float defValue) {
+        if (sharedPreferences == null) {
+            sharedPreferences = context.getSharedPreferences(UF, Context.MODE_PRIVATE);
+        }
+        //获取boolean值
+        return sharedPreferences.getFloat(key, defValue);
+    }
+
 }

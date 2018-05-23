@@ -3,13 +3,12 @@ package com.example.xiaochong.driftingnotes.Activities;
 import android.app.Dialog;
 import android.content.ContentResolver;
 import android.content.Intent;
-import android.database.Cursor;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.Gravity;
@@ -22,6 +21,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.amap.api.location.AMapLocation;
@@ -34,10 +34,11 @@ import com.amap.api.maps2d.LocationSource;
 import com.amap.api.maps2d.MapView;
 import com.amap.api.maps2d.UiSettings;
 import com.amap.api.maps2d.model.MyLocationStyle;
+import com.example.xiaochong.driftingnotes.Entity.LocationBean;
 import com.example.xiaochong.driftingnotes.R;
+import com.example.xiaochong.driftingnotes.Utils.SharedPreferencesUtil;
 
 import java.io.FileNotFoundException;
-import java.io.IOException;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -62,6 +63,8 @@ public class Fragment1 extends Fragment implements LocationSource, AMapLocationL
     MapView map1;
     @Bind(R.id.et_search)
     LinearLayout etSearch;
+    @Bind(R.id.loc_disp)
+    TextView locDisp;
 
 
     private MyLocationStyle myLocationStyle;
@@ -74,6 +77,8 @@ public class Fragment1 extends Fragment implements LocationSource, AMapLocationL
 
     private static final String TAG = "Fragment1";
     private static final int ALBUM_OK = 2;
+
+    private LocationBean mylb;
 
 
     @Override
@@ -126,7 +131,6 @@ public class Fragment1 extends Fragment implements LocationSource, AMapLocationL
             locationClient.startLocation();
             Log.d(TAG, "activate: ");
         }
-
     }
 
     /**
@@ -148,6 +152,11 @@ public class Fragment1 extends Fragment implements LocationSource, AMapLocationL
             if (aMapLocation != null
                     && aMapLocation.getErrorCode() == 0) {
                 mListener.onLocationChanged(aMapLocation);// 显示系统小蓝点
+                Log.d(TAG, "onLocationChanged: " + aMapLocation.getAddress());
+                Log.d(TAG, "onLocationChanged: " + aMapLocation.getDescription());
+                Log.d(TAG, "onLocationChanged: " + aMapLocation.getLatitude());
+                Log.d(TAG, "onLocationChanged: " + aMapLocation.getLongitude());
+                mylb = new LocationBean(aMapLocation.getLongitude(), aMapLocation.getLatitude(), aMapLocation.getAddress(), aMapLocation.getDescription());
             } else {
                 Log.d(TAG, "onLocationChanged: 定位失败" + aMapLocation.getErrorCode() + ": " + aMapLocation.getErrorInfo());
             }
@@ -164,6 +173,11 @@ public class Fragment1 extends Fragment implements LocationSource, AMapLocationL
     @Override
     public void onResume() {
         Log.i("sys", "mf onResume");
+        String loc = SharedPreferencesUtil.getString(getContext(),"TITLE","");
+        if (!loc.equals(""))
+            locDisp.setText(loc);
+        else if (mylb!=null)
+            locDisp.setText(mylb.getTitle());
         map1.onResume();
         super.onResume();
     }
@@ -216,8 +230,22 @@ public class Fragment1 extends Fragment implements LocationSource, AMapLocationL
                 setDialog();
                 break;
             case R.id.bt_putout:
+                Postm();
                 break;
         }
+    }
+
+    /**
+     * 发布判断
+     */
+    private void Postm() {
+        String title = uploadTitle.getText().toString();
+        String content = uploadContext.getText().toString();
+        if(title.length()<6){
+            Toast.makeText(this.getContext(), "标题至少要6个字符", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
     }
 
     private void setDialog() {
@@ -256,12 +284,10 @@ public class Fragment1 extends Fragment implements LocationSource, AMapLocationL
             case R.id.btn_choose_img:
                 //选择照片按钮
                 gallery(v);
-//                Toast.makeText(this.getContext(), "请选择照片", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.btn_open_camera:
                 //拍照按钮
                 startActivity(new Intent(getContext(), TakePhotoActivity.class));
-//                Toast.makeText(this.getContext(), "即将打开相机", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.btn_cancel:
                 mCameraDialog.dismiss();
@@ -272,11 +298,11 @@ public class Fragment1 extends Fragment implements LocationSource, AMapLocationL
 
 
     public void gallery(View view) {
-                // 激活系统图库，选择一张图片
-                Intent intent = new Intent(Intent.ACTION_PICK);
-                intent.setType("image/*");
-                // 开启一个带有返回值的Activity，请求码为PHOTO_REQUEST_GALLERY
-                startActivityForResult(intent, ALBUM_OK);
+        // 激活系统图库，选择一张图片
+        Intent intent = new Intent(Intent.ACTION_PICK);
+        intent.setType("image/*");
+        // 开启一个带有返回值的Activity，请求码为PHOTO_REQUEST_GALLERY
+        startActivityForResult(intent, ALBUM_OK);
     }
 
 

@@ -55,11 +55,11 @@ public class Fragment2 extends Fragment {
 //        Log.d(TAG, "onPoiSearched: "+datas.size()+" errcode: "+errcode);
 
 
-        LinearLayoutManager llm = new LinearLayoutManager(this.getContext());
-        llm.setOrientation(LinearLayoutManager.VERTICAL);
-        rcv2.setLayoutManager(llm);
-        AroundAdapter aroundAdapter = new AroundAdapter(datas);
-        rcv2.setAdapter(aroundAdapter);
+//        LinearLayoutManager llm = new LinearLayoutManager(this.getContext());
+//        llm.setOrientation(LinearLayoutManager.VERTICAL);
+//        rcv2.setLayoutManager(llm);
+//        AroundAdapter aroundAdapter = new AroundAdapter(datas);
+//        rcv2.setAdapter(aroundAdapter);
     }
 
 

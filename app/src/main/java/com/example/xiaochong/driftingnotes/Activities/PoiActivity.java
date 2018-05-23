@@ -21,6 +21,7 @@ import com.example.xiaochong.driftingnotes.Adapter.SearchAdapter;
 import com.example.xiaochong.driftingnotes.Entity.LocationBean;
 import com.example.xiaochong.driftingnotes.R;
 import com.example.xiaochong.driftingnotes.Utils.InputTipTask;
+import com.example.xiaochong.driftingnotes.Utils.SharedPreferencesUtil;
 
 import java.util.ArrayList;
 
@@ -44,6 +45,7 @@ public class PoiActivity extends Activity implements TextWatcher,PoiSearch.OnPoi
     private  PoiSearch.Query query;
     private  PoiSearch poiSearch;
     private ArrayList<LocationBean> datas;
+
 
 
     @Override
@@ -109,17 +111,32 @@ public class PoiActivity extends Activity implements TextWatcher,PoiSearch.OnPoi
             datas = new ArrayList<>();
             ArrayList<PoiItem> pois = poiResult.getPois();
             for (int i = 0; i < pois.size(); i++) {
-                LocationBean locationBean = new LocationBean(pois.get(i).getTitle(),pois.get(i).getSnippet());
+                LocationBean locationBean = new LocationBean(pois.get(i).getLatLonPoint().getLongitude(),
+                        pois.get(i).getLatLonPoint().getLatitude(),
+                        pois.get(i).getTitle(),
+                        pois.get(i).getSnippet());
                 datas.add(locationBean);
             }
             Log.d(TAG, "onPoiSearched: "+datas.size()+" errcode: "+errcode);
-
 
             LinearLayoutManager llm = new LinearLayoutManager(this);
             llm.setOrientation(LinearLayoutManager.VERTICAL);
             dialogSearchRecyclerview.setLayoutManager(llm);
             SearchAdapter searchAdapter = new SearchAdapter(datas);
             dialogSearchRecyclerview.setAdapter(searchAdapter);
+            //调用方法,传入一个接口回调
+            searchAdapter.setItemClickListener(new SearchAdapter.MyItemClickListener() {
+                @Override
+                public void onItemClick(View view, int position) {
+//                    Toast.makeText(PoiActivity.this, "点击了" + position, Toast.LENGTH_SHORT).show();
+                    Log.d(TAG, "onItemClick: "+datas.get(position).toString());
+                    SharedPreferencesUtil.saveString(PoiActivity.this, "TITLE",  datas.get(position).getTitle());
+                    SharedPreferencesUtil.saveString(PoiActivity.this, "SNIPPET",  datas.get(position).getSnippet());
+                    SharedPreferencesUtil.saveFloat(PoiActivity.this, "LONTITUDE", (float) datas.get(position).getLon());
+                    SharedPreferencesUtil.saveFloat(PoiActivity.this, "LATITUDE", (float) datas.get(position).getLat());
+                    finish();
+                }
+            });
         }
     }
 
