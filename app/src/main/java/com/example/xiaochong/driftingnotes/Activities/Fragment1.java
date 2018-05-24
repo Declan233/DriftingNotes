@@ -1,14 +1,18 @@
 package com.example.xiaochong.driftingnotes.Activities;
 
 import android.app.Dialog;
+import android.app.DownloadManager;
 import android.content.ContentResolver;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.Gravity;
@@ -36,9 +40,20 @@ import com.amap.api.maps2d.UiSettings;
 import com.amap.api.maps2d.model.MyLocationStyle;
 import com.example.xiaochong.driftingnotes.Entity.LocationBean;
 import com.example.xiaochong.driftingnotes.R;
+import com.example.xiaochong.driftingnotes.Utils.MD5Util;
 import com.example.xiaochong.driftingnotes.Utils.SharedPreferencesUtil;
+import com.example.xiaochong.driftingnotes.Utils.getAbsolutePathUtil;
+import com.example.xiaochong.driftingnotes.mApp.MyApplication;
+import com.tsy.sdk.myokhttp.response.JsonResponseHandler;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.File;
 import java.io.FileNotFoundException;
+import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -79,6 +94,13 @@ public class Fragment1 extends Fragment implements LocationSource, AMapLocationL
     private static final int ALBUM_OK = 2;
 
     private LocationBean mylb;
+    private String imageurl;
+    private String imageuploadurl="";
+
+    private String uuid;
+    private String token;
+
+    private static boolean sign = false;//用来对mylb赋值进行标记的
 
 
     @Override
@@ -92,6 +114,10 @@ public class Fragment1 extends Fragment implements LocationSource, AMapLocationL
         return view;
     }
 
+    /**
+     * 初始地图样式，获取用户信息
+     * @param savedInstanceState
+     */
     private void initViews(Bundle savedInstanceState) {
         map1.onCreate(savedInstanceState);
         aMap = map1.getMap();
@@ -111,6 +137,9 @@ public class Fragment1 extends Fragment implements LocationSource, AMapLocationL
         aMap.setLocationSource(this);
         aMap.setMyLocationEnabled(true);
         aMap.moveCamera(CameraUpdateFactory.zoomTo(16));
+
+        uuid = SharedPreferencesUtil.getString(getContext(),"UUID","");
+        token = SharedPreferencesUtil.getString(getContext(),"TOKEN","");
     }
 
 
@@ -146,17 +175,25 @@ public class Fragment1 extends Fragment implements LocationSource, AMapLocationL
         locationClient = null;
     }
 
+    /**
+     * 持续定位
+     * @param aMapLocation
+     */
     @Override
     public void onLocationChanged(AMapLocation aMapLocation) {
         if (mListener != null && aMapLocation != null) {
             if (aMapLocation != null
                     && aMapLocation.getErrorCode() == 0) {
                 mListener.onLocationChanged(aMapLocation);// 显示系统小蓝点
-                Log.d(TAG, "onLocationChanged: " + aMapLocation.getAddress());
-                Log.d(TAG, "onLocationChanged: " + aMapLocation.getDescription());
-                Log.d(TAG, "onLocationChanged: " + aMapLocation.getLatitude());
-                Log.d(TAG, "onLocationChanged: " + aMapLocation.getLongitude());
-                mylb = new LocationBean(aMapLocation.getLongitude(), aMapLocation.getLatitude(), aMapLocation.getAddress(), aMapLocation.getDescription());
+//                Log.d(TAG, "onLocationChanged: " + aMapLocation.getAddress());
+//                Log.d(TAG, "onLocationChanged: " + aMapLocation.getDescription());
+//                Log.d(TAG, "onLocationChanged: " + aMapLocation.getLatitude());
+//                Log.d(TAG, "onLocationChanged: " + aMapLocation.getLongitude());
+                if (sign==false) {
+                    mylb = new LocationBean(aMapLocation.getLongitude(), aMapLocation.getLatitude(), aMapLocation.getAddress(), aMapLocation.getDescription());
+                    locDisp.setText(mylb.getTitle());
+                    sign = true;
+                }
             } else {
                 Log.d(TAG, "onLocationChanged: 定位失败" + aMapLocation.getErrorCode() + ": " + aMapLocation.getErrorInfo());
             }
@@ -176,8 +213,13 @@ public class Fragment1 extends Fragment implements LocationSource, AMapLocationL
         String loc = SharedPreferencesUtil.getString(getContext(),"TITLE","");
         if (!loc.equals(""))
             locDisp.setText(loc);
-        else if (mylb!=null)
+        else if (mylb!=null){
+            mylb = new LocationBean(SharedPreferencesUtil.getFloat(getContext(),"LONTITUDE",0),
+                    SharedPreferencesUtil.getFloat(getContext(),"LATITUDE",0),
+                    SharedPreferencesUtil.getString(getContext(),"TITLE",""),
+                    SharedPreferencesUtil.getString(getContext(),"SNIPPET",""));
             locDisp.setText(mylb.getTitle());
+        }
         map1.onResume();
         super.onResume();
     }
@@ -241,9 +283,115 @@ public class Fragment1 extends Fragment implements LocationSource, AMapLocationL
     private void Postm() {
         String title = uploadTitle.getText().toString();
         String content = uploadContext.getText().toString();
-        if(title.length()<6){
-            Toast.makeText(this.getContext(), "标题至少要6个字符", Toast.LENGTH_SHORT).show();
+        if(title.equals("")){
+            Toast.makeText(this.getContext(), "标题不能为空", Toast.LENGTH_SHORT).show();
             return;
+        }
+        if (imageurl!=null){
+            Log.d(TAG, "Postm: "+imageurl);
+            uploadImage(imageurl);
+        }
+        if (imageuploadurl.equals("failed")){
+            imageuploadurl = "";
+            return;
+        }
+        StartPost(title,content);
+
+
+    }
+
+    private void StartPost(String title,String content) {
+        if (mylb==null){
+            Toast.makeText(this.getContext(), "地址为空", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        //发起请求api
+        String apiUrl = "http://hn2.api.okayapi.com/";
+
+        Map<String, String> params = new HashMap<>();
+        params.put("s", "App.Table.Create");
+        params.put("uuid", uuid);
+        params.put("token",token);
+        params.put("app_key","8534042F6FF26B8292E70B1348D443DE");
+        params.put("model_name","DN_Notes");
+
+        JSONObject data = new JSONObject();
+        try {
+            data.put("title",title);
+            data.put("content",content);
+            data.put("longitude",mylb.getLon());
+            data.put("latitude",mylb.getLat());
+            data.put("url",imageuploadurl);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        Log.e(TAG, "StartPost: "+data.toString());
+
+        MyApplication.getmInstance().getMyOkHttp().post()
+                .url(apiUrl)
+                .params(params)
+                .addParam("data",data.toString())
+                .tag(this)
+                .enqueue(new JsonResponseHandler() {
+                    @Override
+                    public void onSuccess(int statusCode, JSONObject response) {
+                        Log.d(TAG, "doDelete onSuccess:" + response);
+                        int code = response.optJSONObject("data").optInt("err_code");
+                        if (code==0){
+                            Toast.makeText(Fragment1.this.getContext(), "发布成功", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(int statusCode, String error_msg) {
+                        Log.d(TAG, "doUpload onFailure:" + error_msg);
+                    }
+
+                });
+    }
+
+    /**
+     * 上传图片
+     * @param imageurl
+     */
+    private void uploadImage(String imageurl) {
+        //发起请求api
+        String apiUrl = "http://hn2.api.okayapi.com/";
+
+        Map<String, String> params = new HashMap<>();
+        params.put("s", "App.CDN.UploadImg");
+        params.put("uuid", uuid);
+        params.put("token",token);
+        params.put("app_key","8534042F6FF26B8292E70B1348D443DE");
+
+        MyApplication.getmInstance().getMyOkHttp().upload()
+                .url(apiUrl)
+                .params(params)
+                .addFile("file", new File(imageurl))        //上传已经存在的File
+                .tag(this)
+                .enqueue(new JsonResponseHandler() {
+                    @Override
+                    public void onSuccess(int statusCode, JSONObject response) {
+                        Log.d(TAG, "doDelete onSuccess:" + response);
+                        int code = response.optJSONObject("data").optInt("err_code");
+                        uploadImageResult(code,response);
+                    }
+
+                    @Override
+                    public void onFailure(int statusCode, String error_msg) {
+                        Log.d(TAG, "doUpload onFailure:" + error_msg);
+                    }
+
+                });
+    }
+
+    private void uploadImageResult(int code,JSONObject response) {
+        if (code==0){
+            imageuploadurl = response.optJSONObject("data").optString("url");
+        }else{
+            Toast.makeText(this.getContext(), "图片上传失败，请重试", Toast.LENGTH_SHORT).show();
+            imageuploadurl = "failed";
         }
 
     }
@@ -313,9 +461,10 @@ public class Fragment1 extends Fragment implements LocationSource, AMapLocationL
             Bitmap bitmap;
             Log.e(TAG, " onActivityResult ");
             ContentResolver cr = this.getActivity().getContentResolver();
-            Uri uri = data.getData();
+            Uri url = data.getData();
+            imageurl = getAbsolutePathUtil.getRealPathFromUri(getContext(),url);
             try {
-                bitmap = BitmapFactory.decodeStream(cr.openInputStream(uri));
+                bitmap = BitmapFactory.decodeStream(cr.openInputStream(url));
                 Log.e(TAG, " onActivityResult " + data.getData().toString());//此处用Log.e，仅是为了查看红色Log方便
 //                getImagePath(uri);//这是用来读取图片的exif
                 uploadImageShow.setImageBitmap(bitmap);
@@ -326,35 +475,6 @@ public class Fragment1 extends Fragment implements LocationSource, AMapLocationL
             }
         }
     }
-//
-//    private String getImagePath(Uri uri) {
-//        if (null == uri) {
-//            Log.e("getImagePath", "uri return null");
-//            return null;
-//        }
-//
-//        Log.e("getImagePath", uri.toString());
-//        String path = null;
-//        final String scheme = uri.getScheme();
-//        if (null == scheme) {
-//            path = uri.getPath();
-//        } else if (ContentResolver.SCHEME_FILE.equals(scheme)) {
-//            path = uri.getPath();
-//        } else if (ContentResolver.SCHEME_CONTENT.equals(scheme)) {
-//            String[] proj = { MediaStore.Images.Media.DATA };
-//            Cursor cursor = getContentResolver().query(uri, proj, null, null,
-//                    null);
-//            int nPhotoColumn = cursor
-//                    .getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-//            if (null != cursor) {
-//                cursor.moveToFirst();
-//                path = cursor.getString(nPhotoColumn);
-//            }
-//            cursor.close();
-//        }
-//
-//        return path;
-//    }
 
 
 }

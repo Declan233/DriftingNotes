@@ -1,5 +1,6 @@
 package com.example.xiaochong.driftingnotes.Activities;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -25,7 +26,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class AssignActivity extends AppCompatActivity {
+public class AssignActivity extends Activity {
 
     @Bind(R.id.a_username)
     EditText aUsername;

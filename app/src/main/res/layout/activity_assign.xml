@@ -27,9 +27,9 @@
             android:layout_weight="7"
             android:layout_width="0dp"
             android:layout_height="40dp"
-            android:hint="请输入您的手机号"
+            android:hint="用户名(不超过10个字符)"
             android:paddingStart="4dp"
-            android:inputType="number"
+            android:maxLength="10"
             android:background="@drawable/input_box"/>
 
     </LinearLayout>

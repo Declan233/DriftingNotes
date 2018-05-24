@@ -8,6 +8,7 @@
     tools:context="com.example.xiaochong.driftingnotes.Activities.Fragment3">
 
     <LinearLayout
+        android:layout_gravity="center"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
@@ -19,39 +20,104 @@
             android:src="@mipmap/user_image"/>
 
             <LinearLayout
+                android:layout_marginTop="50dp"
                 android:orientation="vertical"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                >
+                android:layout_height="wrap_content">
+
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:background="@color/gray_66"
+                    android:layout_height="40dp"
+                    android:background="@drawable/setting_box"
+                    android:layout_marginBottom="20dp"
                     >
                     <TextView
+
+                        android:textAlignment="center"
                         android:layout_weight="9"
-                        android:layout_width="0px"
-                        android:layout_height="50px"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:textSize="16dp"
+                        android:padding="6dp"
                         android:text="afdsf"/>
                     <ImageView
                         android:layout_weight="1"
                         android:layout_gravity="center"
-                        android:layout_width="40dp"
-                        android:layout_height="40dp"
-                        android:src="@mipmap/enter"/>
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:src="@mipmap/enter"
+                        android:scrollbarAlwaysDrawHorizontalTrack="true"/>
                 </LinearLayout>
-                <Button
+
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="50dp" />
-                <Button
+                    android:layout_height="40dp"
+                    android:background="@drawable/setting_box"
+                    android:layout_marginBottom="20dp"
+                    >
+                    <TextView
+
+                        android:textAlignment="center"
+                        android:layout_weight="9"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:textSize="16dp"
+                        android:padding="6dp"
+                        android:text="afdsf"/>
+                    <ImageView
+                        android:layout_weight="1"
+                        android:layout_gravity="center"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:src="@mipmap/enter"
+                        android:scrollbarAlwaysDrawHorizontalTrack="true"/>
+                </LinearLayout>
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="50dp" />
-                <Button
+                    android:layout_height="40dp"
+                    android:background="@drawable/setting_box"
+                    android:layout_marginBottom="20dp"
+                    >
+                    <TextView
+
+                        android:textAlignment="center"
+                        android:layout_weight="9"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:textSize="16dp"
+                        android:padding="6dp"
+                        android:text="afdsf"/>
+                    <ImageView
+                        android:layout_weight="1"
+                        android:layout_gravity="center"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:src="@mipmap/enter"
+                        android:scrollbarAlwaysDrawHorizontalTrack="true"/>
+                </LinearLayout>
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="50dp" />
-                <Button
-                    android:layout_width="match_parent"
-                    android:layout_height="50dp" />
+                    android:layout_height="40dp"
+                    android:background="@drawable/setting_box"
+                    android:layout_marginBottom="20dp"
+                    >
+                    <TextView
+
+                        android:textAlignment="center"
+                        android:layout_weight="9"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:textSize="16dp"
+                        android:padding="6dp"
+                        android:text="afdsf"/>
+                    <ImageView
+                        android:layout_weight="1"
+                        android:layout_gravity="center"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:src="@mipmap/enter"
+                        android:scrollbarAlwaysDrawHorizontalTrack="true"/>
+                </LinearLayout>
 
             </LinearLayout>
 
