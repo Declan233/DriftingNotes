@@ -30,7 +30,8 @@
             android:value="f3ecae054dfb51e4149ba2473c1d14b3" />
 
         <activity android:name=".Activities.MainFragmentActivity" />
-        <activity android:name=".Activities.LoginActivity"
+        <activity
+            android:name=".Activities.LoginActivity"
             android:theme="@android:style/Theme.Holo.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -38,12 +39,15 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".Activities.AssignActivity"
+        <activity
+            android:name=".Activities.AssignActivity"
             android:theme="@android:style/Theme.Holo.NoActionBar" />
         <activity
             android:name=".Activities.PoiActivity"
             android:theme="@android:style/Theme.Holo.NoActionBar" />
-        <activity android:name=".Activities.TakePhotoActivity"></activity>
+        <activity android:name=".Activities.TakePhotoActivity" />
+        <activity android:name=".Activities.KeyWordActivity"
+            android:theme="@android:style/Theme.Holo.NoActionBar"></activity>
     </application>
 
 </manifest>

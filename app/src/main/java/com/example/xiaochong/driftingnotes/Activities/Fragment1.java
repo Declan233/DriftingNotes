@@ -1,18 +1,12 @@
 package com.example.xiaochong.driftingnotes.Activities;
 
 import android.app.Dialog;
-import android.app.DownloadManager;
 import android.content.ContentResolver;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
-import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.Gravity;
@@ -33,25 +27,30 @@ import com.amap.api.location.AMapLocationClient;
 import com.amap.api.location.AMapLocationClientOption;
 import com.amap.api.location.AMapLocationListener;
 import com.amap.api.maps2d.AMap;
+import com.amap.api.maps2d.CameraUpdate;
 import com.amap.api.maps2d.CameraUpdateFactory;
 import com.amap.api.maps2d.LocationSource;
 import com.amap.api.maps2d.MapView;
 import com.amap.api.maps2d.UiSettings;
+import com.amap.api.maps2d.model.CameraPosition;
+import com.amap.api.maps2d.model.LatLng;
+import com.amap.api.maps2d.model.Marker;
+import com.amap.api.maps2d.model.MarkerOptions;
 import com.amap.api.maps2d.model.MyLocationStyle;
+import com.amap.api.services.geocoder.GeocodeSearch;
 import com.example.xiaochong.driftingnotes.Entity.LocationBean;
 import com.example.xiaochong.driftingnotes.R;
-import com.example.xiaochong.driftingnotes.Utils.MD5Util;
 import com.example.xiaochong.driftingnotes.Utils.SharedPreferencesUtil;
 import com.example.xiaochong.driftingnotes.Utils.getAbsolutePathUtil;
 import com.example.xiaochong.driftingnotes.mApp.MyApplication;
 import com.tsy.sdk.myokhttp.response.JsonResponseHandler;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -93,15 +92,20 @@ public class Fragment1 extends Fragment implements LocationSource, AMapLocationL
     private static final String TAG = "Fragment1";
     private static final int ALBUM_OK = 2;
 
-    private LocationBean mylb;
-    private String imageurl;
-    private String imageuploadurl="";
+    private LocationBean mylb;//定位信息
+    private String imageurl;//选择图片的路径
+    private String imageuploadurl="";//上传的图片的返回路径
 
-    private String uuid;
-    private String token;
+    private String uuid;//用户id
+    private String token;//用户登陆凭证
+
+    private String postid;//发布的帖子的ID
 
     private static boolean sign = false;//用来对mylb赋值进行标记的
 
+    private Marker marker;
+
+    public static GeocodeSearch geocodeSearch;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -129,17 +133,11 @@ public class Fragment1 extends Fragment implements LocationSource, AMapLocationL
         mUiSettings.setScaleControlsEnabled(true);
         mUiSettings.setAllGesturesEnabled(true);//所有手势有效
 
-        myLocationStyle = new MyLocationStyle();//初始化定位蓝点样式类
-        myLocationStyle.strokeColor(Color.argb(0, 0, 0, 0));// 设置圆形的边框颜色
-        myLocationStyle.radiusFillColor(Color.argb(0, 0, 0, 0));// 设置圆形的填充颜色
-        aMap.setMyLocationStyle(myLocationStyle);
         aMap.getUiSettings().setMyLocationButtonEnabled(true);
-        aMap.setLocationSource(this);
-        aMap.setMyLocationEnabled(true);
-        aMap.moveCamera(CameraUpdateFactory.zoomTo(16));
 
         uuid = SharedPreferencesUtil.getString(getContext(),"UUID","");
         token = SharedPreferencesUtil.getString(getContext(),"TOKEN","");
+
     }
 
 
@@ -155,7 +153,7 @@ public class Fragment1 extends Fragment implements LocationSource, AMapLocationL
             locationClient.setLocationListener(this);
             clientOption.setLocationMode(AMapLocationClientOption.AMapLocationMode.Hight_Accuracy);//高精度定位
             clientOption.setOnceLocationLatest(true);//设置单次精确定位
-            clientOption.setInterval(15000);
+            clientOption.setOnceLocation(true);
             locationClient.setLocationOption(clientOption);
             locationClient.startLocation();
             Log.d(TAG, "activate: ");
@@ -184,16 +182,10 @@ public class Fragment1 extends Fragment implements LocationSource, AMapLocationL
         if (mListener != null && aMapLocation != null) {
             if (aMapLocation != null
                     && aMapLocation.getErrorCode() == 0) {
-                mListener.onLocationChanged(aMapLocation);// 显示系统小蓝点
-//                Log.d(TAG, "onLocationChanged: " + aMapLocation.getAddress());
-//                Log.d(TAG, "onLocationChanged: " + aMapLocation.getDescription());
-//                Log.d(TAG, "onLocationChanged: " + aMapLocation.getLatitude());
-//                Log.d(TAG, "onLocationChanged: " + aMapLocation.getLongitude());
-                if (sign==false) {
-                    mylb = new LocationBean(aMapLocation.getLongitude(), aMapLocation.getLatitude(), aMapLocation.getAddress(), aMapLocation.getDescription());
-                    locDisp.setText(mylb.getTitle());
-                    sign = true;
-                }
+//                mListener.onLocationChanged(aMapLocation);// 显示系统小蓝点
+                mylb = new LocationBean(aMapLocation.getLongitude(), aMapLocation.getLatitude(), aMapLocation.getAddress(), aMapLocation.getDescription());
+                makepoint();
+                locDisp.setText(mylb.getTitle());
             } else {
                 Log.d(TAG, "onLocationChanged: 定位失败" + aMapLocation.getErrorCode() + ": " + aMapLocation.getErrorInfo());
             }
@@ -211,13 +203,15 @@ public class Fragment1 extends Fragment implements LocationSource, AMapLocationL
     public void onResume() {
         Log.i("sys", "mf onResume");
         String loc = SharedPreferencesUtil.getString(getContext(),"TITLE","");
-        if (!loc.equals(""))
-            locDisp.setText(loc);
-        else if (mylb!=null){
+        if (!loc.equals("")){
             mylb = new LocationBean(SharedPreferencesUtil.getFloat(getContext(),"LONTITUDE",0),
                     SharedPreferencesUtil.getFloat(getContext(),"LATITUDE",0),
                     SharedPreferencesUtil.getString(getContext(),"TITLE",""),
                     SharedPreferencesUtil.getString(getContext(),"SNIPPET",""));
+            makepoint();
+            locDisp.setText(loc);
+        }
+        else if (mylb!=null){
             locDisp.setText(mylb.getTitle());
         }
         map1.onResume();
@@ -250,7 +244,7 @@ public class Fragment1 extends Fragment implements LocationSource, AMapLocationL
     @Override
     public void onSaveInstanceState(Bundle outState) {
         Log.i("sys", "mf onSaveInstanceState");
-        map1.onSaveInstanceState(outState);
+//        map1.onSaveInstanceState(outState);
         super.onSaveInstanceState(outState);
     }
 
@@ -265,6 +259,10 @@ public class Fragment1 extends Fragment implements LocationSource, AMapLocationL
     }
 
 
+    /**
+     * 发布和选择图片两个按钮的监听
+     * @param view
+     */
     @OnClick({R.id.upload_image, R.id.bt_putout})
     public void onViewClicked(View view) {
         switch (view.getId()) {
@@ -296,10 +294,13 @@ public class Fragment1 extends Fragment implements LocationSource, AMapLocationL
             return;
         }
         StartPost(title,content);
-
-
     }
 
+    /**
+     * 发起上传帖子请求
+     * @param title
+     * @param content
+     */
     private void StartPost(String title,String content) {
         if (mylb==null){
             Toast.makeText(this.getContext(), "地址为空", Toast.LENGTH_SHORT).show();
@@ -336,16 +337,21 @@ public class Fragment1 extends Fragment implements LocationSource, AMapLocationL
                 .enqueue(new JsonResponseHandler() {
                     @Override
                     public void onSuccess(int statusCode, JSONObject response) {
-                        Log.d(TAG, "doDelete onSuccess:" + response);
-                        int code = response.optJSONObject("data").optInt("err_code");
-                        if (code==0){
+                        Log.d(TAG, "StartPost onSuccess:" + response);
+                        int code = response.optInt("ret");
+                        if (code==200){
+                            postid = response.optJSONObject("data").optString("id");
                             Toast.makeText(Fragment1.this.getContext(), "发布成功", Toast.LENGTH_SHORT).show();
+                            uploadTitle.setText("");
+                            uploadContext.setText("");
+                            uploadImageShow.setImageBitmap(null);
                         }
                     }
 
                     @Override
+
                     public void onFailure(int statusCode, String error_msg) {
-                        Log.d(TAG, "doUpload onFailure:" + error_msg);
+                        Log.d(TAG, "StartPost onFailure:" + error_msg);
                     }
 
                 });
@@ -374,21 +380,30 @@ public class Fragment1 extends Fragment implements LocationSource, AMapLocationL
                     @Override
                     public void onSuccess(int statusCode, JSONObject response) {
                         Log.d(TAG, "doDelete onSuccess:" + response);
-                        int code = response.optJSONObject("data").optInt("err_code");
-                        uploadImageResult(code,response);
+                        int ret = response.optInt("ret");
+                        uploadImageResult(ret,response);
                     }
 
                     @Override
                     public void onFailure(int statusCode, String error_msg) {
+                        Toast.makeText(Fragment1.this.getContext(), "图片上传失败，请重试", Toast.LENGTH_SHORT).show();
                         Log.d(TAG, "doUpload onFailure:" + error_msg);
                     }
 
                 });
     }
 
+    /**
+     * 上传图片的结果
+     * @param code
+     * @param response
+     */
     private void uploadImageResult(int code,JSONObject response) {
-        if (code==0){
+        if (code==200){
             imageuploadurl = response.optJSONObject("data").optString("url");
+            Log.e(TAG, "uploadImageResult: "+imageuploadurl);
+            if (postid!="")
+                alterurl();
         }else{
             Toast.makeText(this.getContext(), "图片上传失败，请重试", Toast.LENGTH_SHORT).show();
             imageuploadurl = "failed";
@@ -396,6 +411,61 @@ public class Fragment1 extends Fragment implements LocationSource, AMapLocationL
 
     }
 
+
+
+    /**
+     * 修改帖子中的url图片路径
+     */
+    private void alterurl() {
+        //发起请求api
+        String apiUrl = "http://hn2.api.okayapi.com/";
+
+        Map<String, String> params = new HashMap<>();
+        params.put("s", "App.Table.FreeUpdate");
+        params.put("uuid", uuid);
+        params.put("token",token);
+        params.put("app_key","8534042F6FF26B8292E70B1348D443DE");
+        params.put("model_name","DN_Notes");
+
+        JSONArray where = new JSONArray();
+        JSONArray cond1 = new JSONArray();
+        cond1.put("id");
+        cond1.put("=");
+        cond1.put(postid);
+        where.put(cond1);
+
+        JSONObject data = new JSONObject();
+        try {
+            data.put("url",imageuploadurl);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        MyApplication.getmInstance().getMyOkHttp().post()
+                .url(apiUrl)
+                .params(params)
+                .addParam("where",where.toString())
+                .addParam("data",data.toString())
+                .tag(this)
+                .enqueue(new JsonResponseHandler() {
+                    @Override
+                    public void onSuccess(int statusCode, JSONObject response) {
+                        Log.d(TAG, "alterurl onSuccess:" + response);
+                        int ret = response.optInt("ret");
+                        postid="";
+                    }
+
+                    @Override
+                    public void onFailure(int statusCode, String error_msg) {
+                        Log.d(TAG, "alterurl onFailure:" + error_msg);
+                    }
+
+                });
+    }
+
+    /**
+     * 图片选择弹出框
+     */
     private void setDialog() {
         mCameraDialog = new Dialog(this.getContext(), R.style.BottomDialog);
         LinearLayout root = (LinearLayout) LayoutInflater.from(this.getContext()).inflate(
@@ -421,11 +491,19 @@ public class Fragment1 extends Fragment implements LocationSource, AMapLocationL
     }
 
 
+    /**
+     * 进入定位查找界面
+     */
     @OnClick(R.id.et_search)
     public void onViewClicked() {
         startActivity(new Intent(getContext(), PoiActivity.class));
     }
 
+
+    /**
+     * 弹出框按钮的监听
+     * @param v
+     */
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -445,6 +523,10 @@ public class Fragment1 extends Fragment implements LocationSource, AMapLocationL
     }
 
 
+    /**
+     * 打开相册 选择图片
+     * @param view
+     */
     public void gallery(View view) {
         // 激活系统图库，选择一张图片
         Intent intent = new Intent(Intent.ACTION_PICK);
@@ -454,6 +536,12 @@ public class Fragment1 extends Fragment implements LocationSource, AMapLocationL
     }
 
 
+    /**
+     * 选择的图片显示
+     * @param requestCode
+     * @param resultCode
+     * @param data
+     */
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (ALBUM_OK == requestCode) {
@@ -466,7 +554,6 @@ public class Fragment1 extends Fragment implements LocationSource, AMapLocationL
             try {
                 bitmap = BitmapFactory.decodeStream(cr.openInputStream(url));
                 Log.e(TAG, " onActivityResult " + data.getData().toString());//此处用Log.e，仅是为了查看红色Log方便
-//                getImagePath(uri);//这是用来读取图片的exif
                 uploadImageShow.setImageBitmap(bitmap);
                 mCameraDialog.dismiss();
 
@@ -474,6 +561,38 @@ public class Fragment1 extends Fragment implements LocationSource, AMapLocationL
                 e.printStackTrace();
             }
         }
+    }
+
+    //根据地址绘制需要显示的点
+    public void makepoint(){
+        LatLng latLng=new LatLng(mylb.getLat(),mylb.getLon());
+
+        Log.e(TAG, "makepoint: " );
+        aMap.clear();
+        //使用默认点标记
+        Marker maker=aMap.addMarker(
+                new MarkerOptions().position(latLng).title(mylb.getTitle()).snippet(mylb.getSnippet()).visible(true));
+
+        //改变可视区域为指定位置
+        //CameraPosition4个参数分别为位置，缩放级别，目标可视区域倾斜度，可视区域指向方向（正北逆时针算起，0-360）
+        CameraUpdate cameraUpdate= CameraUpdateFactory.newCameraPosition(new CameraPosition(latLng,14,0,30));
+        aMap.moveCamera(cameraUpdate);//地图移向指定区域
+
+        //位置坐标的点击事件
+        aMap.setOnMarkerClickListener(new AMap.OnMarkerClickListener() {
+            @Override
+            public boolean onMarkerClick(Marker marker) {
+                //Toast.makeText(MainActivity.this,"点击指定位置",Toast.LENGTH_SHORT).show();
+                return false;
+            }
+        });
+        //位置上面信息窗口的点击事件
+        aMap.setOnInfoWindowClickListener(new AMap.OnInfoWindowClickListener() {
+            @Override
+            public void onInfoWindowClick(Marker marker) {
+                Toast.makeText(getContext(),"点击了我的地点",Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
 

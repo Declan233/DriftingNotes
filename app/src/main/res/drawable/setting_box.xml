@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:height="1dp"
-        android:gravity="bottom">
+    <!-- 连框颜色值 -->
+    <item>
         <shape>
-            <solid android:color="@color/colorPrimary"></solid>
+            <solid android:color="#000000" />
         </shape>
     </item>
-    <!--<item-->
-        <!--android:height="1dp"-->
-        <!--android:gravity="top">-->
-        <!--<shape>-->
-            <!--<solid android:color="@color/colorPrimary"></solid>-->
-        <!--</shape>-->
-    <!--</item>-->
+    <item
+        android:bottom="1dp">
+        <!--边框里面背景颜色 白色-->
+        <shape>
+            <solid android:color="@color/gray_66" />
+        </shape>
+    </item>
 </layer-list>

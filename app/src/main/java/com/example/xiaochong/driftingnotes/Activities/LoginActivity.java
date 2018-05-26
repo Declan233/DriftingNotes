@@ -105,11 +105,11 @@ public class LoginActivity extends Activity {
     }
 
     /**
-     * 保存用户名和密码
+     * 保存登陆凭证
      */
     private void saveUserInfo() {
-        SharedPreferencesUtil.saveString(this, "USERNAME", mphnum);
-        SharedPreferencesUtil.saveString(this, "USERPSW", mpsw);
+//        SharedPreferencesUtil.saveString(this, "USERNAME", mphnum);
+//        SharedPreferencesUtil.saveString(this, "USERPSW", mpsw);
         SharedPreferencesUtil.saveString(this, "UUID", uuid);
         SharedPreferencesUtil.saveString(this, "TOKEN", token);
         SharedPreferencesUtil.setState(this);
@@ -149,7 +149,7 @@ public class LoginActivity extends Activity {
             Toast.makeText(getApplicationContext(), "请输入您的密码", Toast.LENGTH_SHORT).show();
             return false;
         }if (mpsw.length() < 6) {
-            Toast.makeText(getApplicationContext(), "用户名长度不低于5位", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), "密码长度不低于6位", Toast.LENGTH_SHORT).show();
             etPassword.setText("");
             return false;
         }
@@ -182,7 +182,7 @@ public class LoginActivity extends Activity {
                     @Override
                     public void onSuccess(int statusCode, JSONObject response) {
                         Log.d(TAG, "doPost onSuccess JSONObject:" + response);
-                        int code = response.optJSONObject("data").optInt("err_code");
+                        int code = response.optInt("ret");
                         LoginResult(code,response);
                     }
 
@@ -195,19 +195,21 @@ public class LoginActivity extends Activity {
 
     /**
      * 根据服务器返回确定是否登陆成功
-     * @param code
+     * @param ret
      * @param response
      * @return
      */
-    private boolean LoginResult(int code,JSONObject response) {
-        if (code==0){//登陆成功
-            uuid = response.optJSONObject("data").optString("uuid");
-            token = response.optJSONObject("data").optString("token");
-            saveUserInfo();
-            Intent intent = new Intent(this, MainFragmentActivity.class);
-            startActivity(intent);
-            finish();
-            return true;
+    private boolean LoginResult(int ret,JSONObject response) {
+        if (ret==200){//登陆成功
+            if(response.optJSONObject("data").optInt("code")==0) {
+                uuid = response.optJSONObject("data").optString("uuid");
+                token = response.optJSONObject("data").optString("token");
+                saveUserInfo();
+                Intent intent = new Intent(this, MainFragmentActivity.class);
+                startActivity(intent);
+                finish();
+                return true;
+            }
         }else {//登陆失败
             String msg = response.optJSONObject("data").optString("err_msg");
             edUsername.setText("");etPassword.setText("");

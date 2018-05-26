@@ -3,6 +3,8 @@ package com.example.xiaochong.driftingnotes.Utils;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import java.util.Set;
+
 /**
  * Created by xiaochong on 2018/5/6.
  */
@@ -127,6 +129,32 @@ public class SharedPreferencesUtil {
         }
         //获取boolean值
         return sharedPreferences.getFloat(key, defValue);
+    }
+
+    /**
+     * 写入StringSet值
+     * @param context
+     * @param key
+     * @param value
+     */
+    public static void saveStringSet(Context context, String key, Set<String> value) {
+        //创建sharedPreferences
+        if (sharedPreferences == null) {
+            //name:文件名字 mode:权限
+            sharedPreferences = context.getSharedPreferences(UF, Context.MODE_PRIVATE);
+        }
+        //保存key和value
+        sharedPreferences.edit().putStringSet(key, value).commit();
+    }
+    /**
+     * 获取StringSet值
+     */
+    public static Set<String> getStringSet(Context context, String key, Set<String> defValue) {
+        if (sharedPreferences == null) {
+            sharedPreferences = context.getSharedPreferences(UF, Context.MODE_PRIVATE);
+        }
+        //获取boolean值
+        return sharedPreferences.getStringSet(key, defValue);
     }
 
 }
