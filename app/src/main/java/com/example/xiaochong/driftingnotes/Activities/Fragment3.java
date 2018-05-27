@@ -10,7 +10,6 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 
-import com.example.xiaochong.driftingnotes.Adapter.KeyWordAdapter;
 import com.example.xiaochong.driftingnotes.R;
 
 import butterknife.Bind;
@@ -25,6 +24,8 @@ public class Fragment3 extends Fragment {
     LinearLayout filterKyword;
     @Bind(R.id.view_mypost)
     LinearLayout viewMypost;
+    @Bind(R.id.more)
+    LinearLayout more;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -46,15 +47,21 @@ public class Fragment3 extends Fragment {
         ButterKnife.unbind(this);
     }
 
-    @OnClick({R.id.user_profile, R.id.filter_kyword, R.id.view_mypost})
+    @OnClick({R.id.user_profile, R.id.filter_kyword, R.id.view_mypost, R.id.more})
     public void onViewClicked(View view) {
         switch (view.getId()) {
-            case R.id.user_profile:
-                break;
             case R.id.filter_kyword:
                 startActivity(new Intent(this.getContext(), KeyWordActivity.class));
                 break;
+            //下面三个待实现
+            case R.id.user_profile:
+                startActivity(new Intent(this.getContext(), HistoryActivity.class));
+                break;
             case R.id.view_mypost:
+                startActivity(new Intent(this.getContext(), HistoryActivity.class));
+                break;
+            case R.id.more:
+                startActivity(new Intent(this.getContext(), HistoryActivity.class));
                 break;
         }
     }

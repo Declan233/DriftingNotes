@@ -60,7 +60,7 @@ public class Fragment2 extends Fragment{
 
     private LocationBean mylb;
 
-    private int precision=10;//过滤精确度
+    private int precision=3;//过滤精确度
     private List<String> fliterKeyWord = new ArrayList<>();
     private String searchWord = "";
 
@@ -174,23 +174,17 @@ public class Fragment2 extends Fragment{
                 String content = jsonArray.getJSONObject(i).getString("content");
                 double lat = jsonArray.getJSONObject(i).getDouble("latitude");
                 double lon = jsonArray.getJSONObject(i).getDouble("longitude");
-                if (mylb.getLat()+precision < lat||
-                        mylb.getLat()-precision > lat)
+                if (mylb.getLat()+precision < lat|| mylb.getLat()-precision > lat)
                     continue;
-                if (!searchWord.equals(""))
-                    if((title.indexOf(searchWord)==-1)&&(content.indexOf(searchWord)==-1)){
-                        continue;
-                    }
                 boolean have = false;
-                for (String ky:fliterKeyWord) {
-//                    Log.d(TAG, "processData: "+title.contains(ky)+" "+content.contains(ky));
+                for (String ky:fliterKeyWord)
                     if (title.contains(ky)||content.contains(ky)){
                         have = true;
                         break;
                     }
-                }
-                if (have)//存在关键字，跳过该项数据
-                    continue;
+                if (have) continue; //存在关键字，跳过该项数据
+                if (!searchWord.equals(""))
+                    if((title.indexOf(searchWord)==-1)&&(content.indexOf(searchWord)==-1)) continue;
                 DPoint startLatlng = new DPoint(mylb.getLat(),mylb.getLon());
                 DPoint endLatlng = new DPoint(lat,lon);
                 adatas.add(new AroundData(title, content,
@@ -200,10 +194,7 @@ public class Fragment2 extends Fragment{
         } catch (JSONException e) {
                 e.printStackTrace();
             }
-
         Log.d(TAG, "processData: "+adatas.size());
-
-
         searchWord = "";
 
         LinearLayoutManager llm = new LinearLayoutManager(this.getContext());

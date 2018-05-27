@@ -69,13 +69,15 @@ public class PoiActivity extends Activity implements TextWatcher,PoiSearch.OnPoi
         }
     }
 
+    /**
+     * 发起poi搜索
+     */
     private void searchLocationPoi() {
-        //关闭键盘
-//        KeyBoardUtils.closeKeybord(etSearch, BaseApplication.mContext);
         if (TextUtils.isEmpty(etSearch.getText().toString().trim())) {
             Toast.makeText(getApplicationContext(), "内容为空!", Toast.LENGTH_SHORT).show();
         } else {
-            query = new PoiSearch.Query(etSearch.getText().toString().trim(), "", "");// 第一个参数表示搜索字符串，第二个参数表示poi搜索类型，第三个参数表示poi搜索区域（空字符串代表全国）
+            // 第一个参数表示搜索字符串，第二个参数表示poi搜索类型，第三个参数表示poi搜索区域（空字符串代表全国）
+            query = new PoiSearch.Query(etSearch.getText().toString().trim(), "", "");
             query.setCityLimit(true);
             query.setPageSize(40);// 设置每页最多返回多少条poiitem
             query.setPageNum(0);// 设置查第一页
@@ -105,6 +107,11 @@ public class PoiActivity extends Activity implements TextWatcher,PoiSearch.OnPoi
 
     }
 
+    /**
+     * 处理poi搜索数据
+     * @param poiResult
+     * @param errcode
+     */
     @Override
     public void onPoiSearched(PoiResult poiResult, int errcode) {
         if (errcode == 1000) {
@@ -128,7 +135,6 @@ public class PoiActivity extends Activity implements TextWatcher,PoiSearch.OnPoi
             searchAdapter.setItemClickListener(new SearchAdapter.MyItemClickListener() {
                 @Override
                 public void onItemClick(View view, int position) {
-//                    Toast.makeText(PoiActivity.this, "点击了" + position, Toast.LENGTH_SHORT).show();
                     Log.d(TAG, "onItemClick: "+datas.get(position).toString());
                     SharedPreferencesUtil.saveString(PoiActivity.this, "TITLE",  datas.get(position).getTitle());
                     SharedPreferencesUtil.saveString(PoiActivity.this, "SNIPPET",  datas.get(position).getSnippet());

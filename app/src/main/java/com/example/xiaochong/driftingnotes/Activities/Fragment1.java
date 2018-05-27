@@ -81,7 +81,6 @@ public class Fragment1 extends Fragment implements LocationSource, AMapLocationL
     TextView locDisp;
 
 
-    private MyLocationStyle myLocationStyle;
     private OnLocationChangedListener mListener;
     private AMapLocationClient locationClient;
     private AMapLocationClientOption clientOption;
@@ -101,11 +100,6 @@ public class Fragment1 extends Fragment implements LocationSource, AMapLocationL
 
     private String postid;//发布的帖子的ID
 
-    private static boolean sign = false;//用来对mylb赋值进行标记的
-
-    private Marker marker;
-
-    public static GeocodeSearch geocodeSearch;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -477,7 +471,6 @@ public class Fragment1 extends Fragment implements LocationSource, AMapLocationL
         mCameraDialog.setContentView(root);
         Window dialogWindow = mCameraDialog.getWindow();
         dialogWindow.setGravity(Gravity.BOTTOM);
-//        dialogWindow.setWindowAnimations(R.style.dialogstyle); // 添加动画
         WindowManager.LayoutParams lp = dialogWindow.getAttributes(); // 获取对话框当前的参数值
         lp.x = 0; // 新位置X坐标
         lp.y = 0; // 新位置Y坐标
@@ -563,7 +556,10 @@ public class Fragment1 extends Fragment implements LocationSource, AMapLocationL
         }
     }
 
-    //根据地址绘制需要显示的点
+
+    /**
+     * 根据地址绘制需要显示的点
+     */
     public void makepoint(){
         LatLng latLng=new LatLng(mylb.getLat(),mylb.getLon());
 
@@ -578,21 +574,6 @@ public class Fragment1 extends Fragment implements LocationSource, AMapLocationL
         CameraUpdate cameraUpdate= CameraUpdateFactory.newCameraPosition(new CameraPosition(latLng,14,0,30));
         aMap.moveCamera(cameraUpdate);//地图移向指定区域
 
-        //位置坐标的点击事件
-        aMap.setOnMarkerClickListener(new AMap.OnMarkerClickListener() {
-            @Override
-            public boolean onMarkerClick(Marker marker) {
-                //Toast.makeText(MainActivity.this,"点击指定位置",Toast.LENGTH_SHORT).show();
-                return false;
-            }
-        });
-        //位置上面信息窗口的点击事件
-        aMap.setOnInfoWindowClickListener(new AMap.OnInfoWindowClickListener() {
-            @Override
-            public void onInfoWindowClick(Marker marker) {
-                Toast.makeText(getContext(),"点击了我的地点",Toast.LENGTH_SHORT).show();
-            }
-        });
     }
 
 

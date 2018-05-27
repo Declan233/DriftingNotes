@@ -46,7 +46,10 @@
             android:name=".Activities.PoiActivity"
             android:theme="@android:style/Theme.Holo.NoActionBar" />
         <activity android:name=".Activities.TakePhotoActivity" />
-        <activity android:name=".Activities.KeyWordActivity"
+        <activity
+            android:name=".Activities.KeyWordActivity"
+            android:theme="@android:style/Theme.Holo.NoActionBar" />
+        <activity android:name=".Activities.HistoryActivity"
             android:theme="@android:style/Theme.Holo.NoActionBar"></activity>
     </application>
 

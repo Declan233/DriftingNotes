@@ -75,7 +75,6 @@ public class KeyWordAdapter extends RecyclerView.Adapter<KeyWordAdapter.MyHolder
         }
     }
 
-
     /**
      * 创建一个回调接口
      */
@@ -85,7 +84,6 @@ public class KeyWordAdapter extends RecyclerView.Adapter<KeyWordAdapter.MyHolder
 
     /**
      * 在activity里面adapter就是调用的这个方法,将点击事件监听传递过来,并赋值给全局的监听
-     *
      * @param myItemClickListener
      */
     public void setItemClickListener(MyItemClickListener myItemClickListener) {

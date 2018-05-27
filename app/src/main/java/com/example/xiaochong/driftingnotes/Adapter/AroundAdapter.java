@@ -83,7 +83,6 @@ public class AroundAdapter extends RecyclerView.Adapter<AroundAdapter.MyHolder> 
     }
 
     public static Bitmap getBitmap(String path){
-
         URL url = null;
         try {
             url = new URL(path);
