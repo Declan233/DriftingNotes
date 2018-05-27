@@ -36,8 +36,6 @@ import com.amap.api.maps2d.model.CameraPosition;
 import com.amap.api.maps2d.model.LatLng;
 import com.amap.api.maps2d.model.Marker;
 import com.amap.api.maps2d.model.MarkerOptions;
-import com.amap.api.maps2d.model.MyLocationStyle;
-import com.amap.api.services.geocoder.GeocodeSearch;
 import com.example.xiaochong.driftingnotes.Entity.LocationBean;
 import com.example.xiaochong.driftingnotes.R;
 import com.example.xiaochong.driftingnotes.Utils.SharedPreferencesUtil;
@@ -127,7 +125,10 @@ public class Fragment1 extends Fragment implements LocationSource, AMapLocationL
         mUiSettings.setScaleControlsEnabled(true);
         mUiSettings.setAllGesturesEnabled(true);//所有手势有效
 
-        aMap.getUiSettings().setMyLocationButtonEnabled(true);
+//        aMap.getUiSettings().setMyLocationButtonEnabled(true);
+
+        aMap.setLocationSource(this);// 设置定位监听
+        aMap.setMyLocationEnabled(true);
 
         uuid = SharedPreferencesUtil.getString(getContext(),"UUID","");
         token = SharedPreferencesUtil.getString(getContext(),"TOKEN","");
@@ -177,6 +178,7 @@ public class Fragment1 extends Fragment implements LocationSource, AMapLocationL
             if (aMapLocation != null
                     && aMapLocation.getErrorCode() == 0) {
 //                mListener.onLocationChanged(aMapLocation);// 显示系统小蓝点
+                Log.d(TAG, "onLocationChanged: "+ aMapLocation.getAddress()+" 1");
                 mylb = new LocationBean(aMapLocation.getLongitude(), aMapLocation.getLatitude(), aMapLocation.getAddress(), aMapLocation.getDescription());
                 makepoint();
                 locDisp.setText(mylb.getTitle());

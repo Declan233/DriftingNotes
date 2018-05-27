@@ -102,7 +102,9 @@ public class Fragment2 extends Fragment{
         getDatasFromCloud();
         //获取过滤关键字
         fliterKeyWord.clear();
-        fliterKeyWord.addAll(SharedPreferencesUtil.getStringSet(getContext(),"FILTERKEYWORD",null));
+        Set<String> fliter = SharedPreferencesUtil.getStringSet(getContext(),"FILTERKEYWORD",null);
+        if (fliter!=null)
+            fliterKeyWord.addAll(fliter);
         Log.d(TAG, "initView: ");
     }
 
@@ -127,11 +129,11 @@ public class Fragment2 extends Fragment{
         JSONArray cond1 = new JSONArray();
         cond1.put("longitude");
         cond1.put("<");
-        cond1.put(((int)(mylb.getLon()+precision))+"");
+        cond1.put((mylb.getLon()+precision)+"");
         JSONArray cond2 = new JSONArray();
         cond2.put("longitude");
         cond2.put(">");
-        cond2.put(((int)(mylb.getLon()-precision))+"");
+        cond2.put((mylb.getLon()-precision)+"");
         where.put(cond1);
         where.put(cond2);
 

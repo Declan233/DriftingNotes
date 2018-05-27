@@ -22,6 +22,13 @@ public class AroundData {
         this.lat = lat;
         this.distance = distance;
     }
+    public AroundData(String title, String content, String picurl,double lon,double lat){
+        this.title = title;
+        this.content = content;
+        this.picurl = picurl;
+        this.lon = lon;
+        this.lat = lat;
+    }
 
     public String getTitle() {
         return title;

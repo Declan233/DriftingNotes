@@ -4,6 +4,8 @@
 
     <!-- 允许程序打开网络套接字 -->
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"></uses-permission>
+    <uses-permission android:name="android.permission.ACCESS_LOCATION_EXTRA_COMMANDS"></uses-permission>
     <!-- 允许程序设置内置sd卡的写权限 -->
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <!-- 允许程序获取网络状态 -->
@@ -49,7 +51,10 @@
         <activity
             android:name=".Activities.KeyWordActivity"
             android:theme="@android:style/Theme.Holo.NoActionBar" />
-        <activity android:name=".Activities.HistoryActivity"
+        <activity
+            android:name=".Activities.HistoryActivity"
+            android:theme="@android:style/Theme.Holo.NoActionBar" />
+        <activity android:name=".Activities.UnderGoActivity"
             android:theme="@android:style/Theme.Holo.NoActionBar"></activity>
     </application>
 

@@ -5,7 +5,6 @@
     android:background="#ffffff"
     tools:context="com.example.xiaochong.driftingnotes.Activities.Fragment1">
 
-    
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
@@ -48,99 +47,113 @@
 
         </LinearLayout>
 
-    <com.amap.api.maps2d.MapView
-        android:id="@+id/map1"
-        android:layout_width="match_parent"
-        android:layout_height="300dp"
-        android:layout_marginBottom="20dp"/>
-
-        <TextView
-            android:id="@+id/loc_disp"
+        <com.amap.api.maps2d.MapView
+            android:id="@+id/map1"
             android:layout_width="match_parent"
-            android:layout_height="30dp"
-            android:textColor="#909090"
-            android:textAlignment="center"
-            android:textSize="14dp"
-            android:layout_marginStart="10dp"
-            android:layout_marginEnd="10dp"
-            android:background="@drawable/head_image"
-            android:padding="4dp"
-            android:text="当前位置" />
+            android:layout_height="300dp"
+            android:layout_marginBottom="20dp"/>
 
-
-        <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-        <LinearLayout
-            android:layout_marginStart="10dp"
-            android:layout_marginBottom="10dp"
-            android:layout_weight="5"
-            android:layout_height="wrap_content"
-            android:layout_width="0dp"
-            android:gravity="center"
-            android:orientation="vertical">
-            <EditText
-                android:id="@+id/upload_title"
-                android:layout_width="match_parent"
-                android:layout_height="60dp"
-                android:layout_marginTop="6dp"
-                android:padding="6dp"
-                android:hint="标题"
-                android:textColorHint="#CDC9C9"
-                android:background="@drawable/headline"
-                />
-            <EditText
-                android:id="@+id/upload_context"
-                android:layout_width="match_parent"
-                android:layout_height="150dp"
-                android:layout_marginTop="6dp"
-                android:padding="6dp"
-                android:textColorHint="#CDC9C9"
-                android:hint="正文"
-                android:background="@drawable/intail"
-                />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_weight="5"
-            android:orientation="vertical"
-            android:gravity="center"
-            android:layout_width="0dp"
-            android:paddingTop="20dp"
+        <ScrollView
+            android:layout_width="match_parent"
             android:layout_height="wrap_content">
-            <ImageView
-                android:id="@+id/upload_image_show"
-                android:layout_width="160dp"
-                android:layout_height="160dp"
-                android:background="#eeeeee"
-                android:src="@mipmap/pic_bg"
-                android:scaleType="centerInside"/>
-            <Button
-                android:id="@+id/upload_image"
-                android:gravity="center"
-                android:layout_marginTop="10dp"
-                android:layout_width="80dp"
-                android:layout_height="28dp"
-                android:padding="2dp"
-                android:text="选择图片"
-                android:textSize="16dp"
-                android:textColor="#7F7F7F"
-                android:background="@color/LightSkyBlue"/>
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
 
-        </LinearLayout>
+                <TextView
+                    android:id="@+id/loc_disp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="10dp"
+                    android:layout_marginStart="10dp"
+                    android:background="@drawable/head_image"
+                    android:padding="4dp"
+                    android:text="当前位置"
+                    android:textAlignment="center"
+                    android:textColor="#909090"
+                    android:textSize="14dp" />
 
-    </LinearLayout>
-        <Button
-            android:id="@+id/bt_putout"
-            android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:background="@drawable/bt_box"
-            android:textColor="#2F4F4F"
-            android:text="发    布"
-            android:textSize="18dp"
-            android:layout_marginStart="20dp"
-            android:layout_marginEnd="20dp"/>
+
+                <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                    <LinearLayout
+                        android:layout_marginStart="10dp"
+                        android:layout_marginBottom="10dp"
+                        android:layout_weight="5"
+                        android:layout_height="wrap_content"
+                        android:layout_width="0dp"
+                        android:gravity="center"
+                        android:orientation="vertical">
+                            <EditText
+                                android:id="@+id/upload_title"
+                                android:layout_width="match_parent"
+                                android:layout_height="60dp"
+                                android:layout_marginTop="6dp"
+                                android:padding="6dp"
+                                android:hint="标题"
+                                android:textColorHint="#CDC9C9"
+                                android:background="@drawable/headline"
+                                />
+                            <EditText
+                                android:id="@+id/upload_context"
+                                android:layout_width="match_parent"
+                                android:layout_height="150dp"
+                                android:layout_marginTop="6dp"
+                                android:padding="6dp"
+                                android:textColorHint="#CDC9C9"
+                                android:hint="正文"
+                                android:background="@drawable/intail"
+                                />
+                        </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_weight="5"
+                        android:orientation="vertical"
+                        android:gravity="center"
+                        android:layout_width="0dp"
+                        android:paddingTop="20dp"
+                        android:layout_height="wrap_content">
+                        <ImageView
+                            android:id="@+id/upload_image_show"
+                            android:layout_width="160dp"
+                            android:layout_height="160dp"
+                            android:background="#eeeeee"
+                            android:src="@mipmap/pic_bg"
+                            android:scaleType="centerInside"/>
+                        <Button
+                            android:id="@+id/upload_image"
+                            android:gravity="center"
+                            android:layout_marginTop="10dp"
+                            android:layout_width="80dp"
+                            android:layout_height="28dp"
+                            android:padding="2dp"
+                            android:text="选择图片"
+                            android:textSize="16dp"
+                            android:textColor="#7F7F7F"
+                            android:background="@color/LightSkyBlue"/>
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <Button
+                    android:id="@+id/bt_putout"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:background="@drawable/bt_box"
+                    android:textColor="#2F4F4F"
+                    android:text="发    布"
+                    android:textSize="18dp"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginEnd="20dp"/>
+
+            </LinearLayout>
+
+        </ScrollView>
+
     </LinearLayout>
 
 

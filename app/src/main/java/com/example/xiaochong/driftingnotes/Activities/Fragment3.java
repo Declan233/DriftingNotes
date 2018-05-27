@@ -55,13 +55,13 @@ public class Fragment3 extends Fragment {
                 break;
             //下面三个待实现
             case R.id.user_profile:
-                startActivity(new Intent(this.getContext(), HistoryActivity.class));
+                startActivity(new Intent(this.getContext(), UnderGoActivity.class));
                 break;
             case R.id.view_mypost:
                 startActivity(new Intent(this.getContext(), HistoryActivity.class));
                 break;
             case R.id.more:
-                startActivity(new Intent(this.getContext(), HistoryActivity.class));
+                startActivity(new Intent(this.getContext(), UnderGoActivity.class));
                 break;
         }
     }
