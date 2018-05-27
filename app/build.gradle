@@ -33,8 +33,6 @@ dependencies {
     compile 'com.jakewharton:butterknife:7.0.1'
     compile 'com.android.support:multidex:1.0.1'
     compile 'com.tsy:myokhttp:1.1.4'
-    implementation files('libs/volley.jar')
-    implementation files('libs/xUtils-2.6.10.jar')
     implementation files('libs/AMap2DMap_5.2.0_AMapSearch_6.1.0_AMapLocation_4.0.1_20180426.jar')
     //导航功能
     provided 'com.amap.api:navi-3dmap:latest.integration'

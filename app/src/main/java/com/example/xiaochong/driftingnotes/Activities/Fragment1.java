@@ -338,7 +338,7 @@ public class Fragment1 extends Fragment implements LocationSource, AMapLocationL
                             Toast.makeText(Fragment1.this.getContext(), "发布成功", Toast.LENGTH_SHORT).show();
                             uploadTitle.setText("");
                             uploadContext.setText("");
-                            uploadImageShow.setImageBitmap(null);
+                            uploadImageShow.setImageResource(R.mipmap.pic_bg);
                         }
                     }
 
